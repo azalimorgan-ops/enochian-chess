@@ -3,6 +3,7 @@
 export { Element, SubElement, PieceType, DignityRelation } from './types';
 export type { SquareData, PieceTemplate, ConcourseConfig } from './types';
 export * from './board-layout';
+export type { TriangleColors } from './board-layout';
 export * from './pieces';
 export * from './dignities';
 export * from './concourse';

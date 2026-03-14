@@ -160,3 +160,46 @@ export function getSquareAt(row: number, col: number): SquareData | null {
 export function getQuadrantSquares(element: Element): SquareData[] {
   return allSquares.filter(sq => sq.quadrant === element);
 }
+
+// Triangle element colors for traditional board design
+// Each square is divided into 4 triangles in an X pattern (diagonals from corners)
+// Returns [top, right, bottom, left] element colors
+// The qualifying element (first part of sub-element) determines rotation
+
+const ELEMENT_COLORS: Record<Element, string> = {
+  [Element.FIRE]:  '#DC2626',
+  [Element.WATER]: '#2563EB',
+  [Element.AIR]:   '#EAB308',
+  [Element.EARTH]: '#1A1A1A',
+};
+
+// Triangle arrangements: the qualifying element (X in X_OF_Y) goes to top,
+// then the remaining elements rotate clockwise
+const TRIANGLE_ROTATIONS: Record<Element, [Element, Element, Element, Element]> = {
+  [Element.FIRE]:  [Element.FIRE, Element.WATER, Element.EARTH, Element.AIR],
+  [Element.WATER]: [Element.WATER, Element.EARTH, Element.AIR, Element.FIRE],
+  [Element.AIR]:   [Element.AIR, Element.FIRE, Element.WATER, Element.EARTH],
+  [Element.EARTH]: [Element.EARTH, Element.AIR, Element.FIRE, Element.WATER],
+};
+
+export interface TriangleColors {
+  top: string;
+  right: string;
+  bottom: string;
+  left: string;
+}
+
+/** Get the 4 triangle fill colors for a square based on its sub-element */
+export function getTriangleColors(subElement: SubElement): TriangleColors {
+  // Extract the qualifying element (first part: X in X_OF_Y)
+  const qualifier = subElement.split('_OF_')[0] as Element;
+  const [top, right, bottom, left] = TRIANGLE_ROTATIONS[qualifier];
+  return {
+    top: ELEMENT_COLORS[top],
+    right: ELEMENT_COLORS[right],
+    bottom: ELEMENT_COLORS[bottom],
+    left: ELEMENT_COLORS[left],
+  };
+}
+
+export { ELEMENT_COLORS as BOARD_ELEMENT_COLORS };

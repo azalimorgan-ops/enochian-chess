@@ -4,17 +4,17 @@ import type { Piece } from "@enochian-chess/engine";
 import { Element as Elem } from "@enochian-chess/data";
 
 const ELEMENT_COLORS: Record<Elem, string> = {
-  [Elem.FIRE]: "#DC2626",
-  [Elem.WATER]: "#2563EB",
-  [Elem.AIR]: "#EAB308",
-  [Elem.EARTH]: "#16A34A",
+  [Elem.FIRE]: "#FF4444",
+  [Elem.WATER]: "#5B9BFF",
+  [Elem.AIR]: "#FFD700",
+  [Elem.EARTH]: "#4ADE80",
 };
 
 const ELEMENT_BG: Record<Elem, string> = {
-  [Elem.FIRE]: "#7F1D1D",
-  [Elem.WATER]: "#1E3A5F",
-  [Elem.AIR]: "#713F12",
-  [Elem.EARTH]: "#14532D",
+  [Elem.FIRE]: "rgba(80, 10, 10, 0.92)",
+  [Elem.WATER]: "rgba(10, 30, 70, 0.92)",
+  [Elem.AIR]: "rgba(70, 50, 10, 0.92)",
+  [Elem.EARTH]: "rgba(10, 50, 25, 0.92)",
 };
 
 interface PieceIconProps {
@@ -30,10 +30,13 @@ export function PieceIcon({ piece, x, y, size, isSelected }: PieceIconProps) {
   const bg = ELEMENT_BG[piece.template.element];
   const cx = x + size / 2;
   const cy = y + size / 2;
-  const r = size * 0.38;
+  const r = size * 0.36;
 
   return (
     <g>
+      {/* Shadow */}
+      <circle cx={cx + 1} cy={cy + 1} r={r} fill="rgba(0,0,0,0.5)" />
+
       {/* Background circle */}
       <circle cx={cx} cy={cy} r={r} fill={bg} stroke={color} strokeWidth={2} />
 
@@ -43,21 +46,22 @@ export function PieceIcon({ piece, x, y, size, isSelected }: PieceIconProps) {
         y={cy + 1}
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={size * 0.48}
+        fontSize={size * 0.42}
         fill={color}
         fontWeight="bold"
       >
         {getPieceSymbol(piece.template.type)}
       </text>
 
-      {/* Element indicator (small letter) */}
+      {/* Element indicator (small letter below) */}
       <text
         x={cx}
-        y={cy + r + 10}
+        y={cy + r + 9}
         textAnchor="middle"
-        fontSize={8}
+        fontSize={7}
         fill={color}
-        opacity={0.8}
+        opacity={0.7}
+        fontWeight="bold"
       >
         {piece.template.element[0]}
       </text>
