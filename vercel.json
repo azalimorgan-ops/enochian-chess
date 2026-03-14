@@ -1,6 +1,6 @@
 {
   "buildCommand": "npx turbo build --filter=web",
   "outputDirectory": "apps/web/.next",
-  "installCommand": "npm install --force",
+  "installCommand": "npm install && npm install lightningcss-linux-x64-gnu@1.31.1",
   "framework": "nextjs"
 }
