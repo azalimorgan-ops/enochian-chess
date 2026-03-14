@@ -9,6 +9,13 @@ const NAV_ITEMS = [
     color: "text-[var(--color-fire)]",
   },
   {
+    href: "/how-to-play",
+    title: "How to Play",
+    description: "Learn the rules, piece movements, alliances, and beginner tips",
+    icon: "📜",
+    color: "text-[var(--color-gold)]",
+  },
+  {
     href: "/divination",
     title: "Divination",
     description: "Perform readings using the Enochian chess divination system",

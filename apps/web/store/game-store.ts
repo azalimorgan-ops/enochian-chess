@@ -13,19 +13,22 @@ import {
 } from "@enochian-chess/engine";
 
 export type GameMode = "solo" | "pass-and-play" | "team-2p" | "online";
+export type Difficulty = "beginner" | "intermediate" | "advanced";
 
 interface GameStore {
   // State
   gameState: GameState | null;
   gameMode: GameMode;
+  difficulty: Difficulty;
   selectedPieceId: string | null;
   legalMoves: Position[];
+  hintMoves: Position[];
   isAIThinking: boolean;
   humanElements: Element[];
   showLabels: boolean;
 
   // Actions
-  newGame: (openingElement: Element, mode: GameMode) => void;
+  newGame: (openingElement: Element, mode: GameMode, difficulty?: Difficulty) => void;
   selectPiece: (pieceId: string) => void;
   clickSquare: (pos: Position) => void;
   undoMove: () => void;
@@ -36,13 +39,15 @@ interface GameStore {
 export const useGameStore = create<GameStore>((set, get) => ({
   gameState: null,
   gameMode: "solo",
+  difficulty: "intermediate",
   selectedPieceId: null,
   legalMoves: [],
+  hintMoves: [],
   isAIThinking: false,
   humanElements: [],
   showLabels: false,
 
-  newGame: (openingElement, mode) => {
+  newGame: (openingElement, mode, difficulty = "intermediate") => {
     const state = createNewGame(openingElement, "GAME");
     let humanElements: Element[];
 
@@ -63,8 +68,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({
       gameState: state,
       gameMode: mode,
+      difficulty,
       selectedPieceId: null,
       legalMoves: [],
+      hintMoves: [],
       isAIThinking: false,
       humanElements,
     });
@@ -76,7 +83,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   selectPiece: (pieceId) => {
-    const { gameState } = get();
+    const { gameState, difficulty } = get();
     if (!gameState) return;
 
     const piece = gameState.pieces.find((p) => p.id === pieceId);
@@ -84,7 +91,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (piece.template.element !== gameState.currentTurn) return;
 
     const moves = getLegalMoves(piece, gameState);
-    set({ selectedPieceId: pieceId, legalMoves: moves });
+
+    // Generate hints for beginner mode
+    let hintMoves: Position[] = [];
+    if (difficulty === "beginner") {
+      const bestMove = findBestMove(gameState, { maxDepth: 1, timeLimit: 500 });
+      if (bestMove && bestMove.pieceId === pieceId) {
+        hintMoves = [bestMove.to];
+      }
+    }
+
+    set({ selectedPieceId: pieceId, legalMoves: moves, hintMoves });
   },
 
   clickSquare: (pos) => {
@@ -163,7 +180,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Run AI in a microtask to not block UI
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    const move = findBestMove(gameState, { maxDepth: 2, timeLimit: 2000 });
+    const { difficulty } = get();
+    const maxDepth = difficulty === "beginner" ? 1 : difficulty === "intermediate" ? 2 : 3;
+    const move = findBestMove(gameState, { maxDepth, timeLimit: 2000 });
     if (!move) {
       set({ isAIThinking: false });
       return;

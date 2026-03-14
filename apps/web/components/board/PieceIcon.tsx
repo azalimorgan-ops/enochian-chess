@@ -30,7 +30,7 @@ export function PieceIcon({ piece, x, y, size, isSelected }: PieceIconProps) {
   const bg = ELEMENT_BG[piece.template.element];
   const cx = x + size / 2;
   const cy = y + size / 2;
-  const r = size * 0.35;
+  const r = size * 0.38;
 
   return (
     <g>
@@ -43,7 +43,7 @@ export function PieceIcon({ piece, x, y, size, isSelected }: PieceIconProps) {
         y={cy + 1}
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={size * 0.35}
+        fontSize={size * 0.48}
         fill={color}
         fontWeight="bold"
       >

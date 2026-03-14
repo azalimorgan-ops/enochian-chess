@@ -17,8 +17,10 @@ export function GameController() {
     gameState,
     selectedPieceId,
     legalMoves,
+    hintMoves,
     isAIThinking,
     showLabels,
+    difficulty,
     clickSquare,
     undoMove,
     toggleLabels,
@@ -43,16 +45,30 @@ export function GameController() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <Link
-            href="/"
-            onClick={(e) => {
-              e.preventDefault();
-              useGameStore.setState({ gameState: null });
-            }}
-            className="text-[var(--color-muted)] hover:text-[var(--color-gold)] transition-colors"
-          >
-            &larr; Exit Game
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                useGameStore.setState({ gameState: null });
+              }}
+              className="text-[var(--color-muted)] hover:text-[var(--color-gold)] transition-colors"
+            >
+              &larr; Exit Game
+            </Link>
+            <Link
+              href="/how-to-play"
+              target="_blank"
+              className="text-xs text-[var(--color-muted)] hover:text-[var(--color-gold)] border border-[var(--color-border)] px-2 py-1 rounded hover:border-[var(--color-gold-dark)] transition-colors"
+            >
+              Rules
+            </Link>
+            {difficulty === "beginner" && (
+              <span className="text-xs text-blue-400 border border-blue-800 px-2 py-1 rounded">
+                Beginner
+              </span>
+            )}
+          </div>
           <h1 className="text-xl font-bold text-[var(--color-gold)]" style={{ fontFamily: "Cinzel, serif" }}>
             Enochian Chess
           </h1>
@@ -80,6 +96,7 @@ export function GameController() {
               pieces={gameState.pieces}
               selectedPieceId={selectedPieceId}
               legalMoves={legalMoves}
+              hintMoves={hintMoves}
               currentTurn={gameState.currentTurn}
               onSquareClick={clickSquare}
               showLabels={showLabels}

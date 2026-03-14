@@ -11,6 +11,7 @@ interface BoardProps {
   pieces: Piece[];
   selectedPieceId: string | null;
   legalMoves: Position[];
+  hintMoves?: Position[];
   currentTurn: Elem;
   onSquareClick: (pos: Position) => void;
   showLabels?: boolean;
@@ -20,6 +21,7 @@ export function Board({
   pieces,
   selectedPieceId,
   legalMoves,
+  hintMoves = [],
   currentTurn,
   onSquareClick,
   showLabels = false,
@@ -38,6 +40,9 @@ export function Board({
           const x = c * SQUARE_SIZE;
           const y = r * SQUARE_SIZE;
           const isLegalTarget = legalMoves.some(
+            (m) => m.row === r && m.col === c
+          );
+          const isHint = hintMoves.some(
             (m) => m.row === r && m.col === c
           );
           const piece = activePieces.find(
@@ -97,6 +102,26 @@ export function Board({
                   strokeWidth={3}
                   rx={2}
                 />
+              )}
+
+              {/* Hint indicator (beginner mode) */}
+              {isHint && isLegalTarget && (
+                <circle
+                  cx={x + SQUARE_SIZE / 2}
+                  cy={y + SQUARE_SIZE / 2}
+                  r={SQUARE_SIZE / 2 - 4}
+                  fill="none"
+                  stroke="rgba(59, 130, 246, 0.8)"
+                  strokeWidth={3}
+                  rx={2}
+                >
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
               )}
 
               {/* Square label */}
