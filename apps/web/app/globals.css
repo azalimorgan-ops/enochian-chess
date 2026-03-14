@@ -14,7 +14,8 @@
   --color-water: #2563EB;
   --color-air: #EAB308;
   --color-earth: #16A34A;
-  --font-sans: var(--font-inter);
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Cinzel', serif;
 }
 
 body {
